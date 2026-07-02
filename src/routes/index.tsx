@@ -231,18 +231,18 @@ function Index() {
               </a>
             </motion.div>
 
-            {/* Right — avatar anchored bottom-right */}
-            <motion.div
+               {/* Right — avatar anchored bottom-right */}
+              <motion.div
               style={{ y: heroImageY }}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-              className="relative flex h-[360px] items-end justify-end self-end sm:h-[520px] lg:h-full"
+              className="relative flex h-[520px] w-full items-end justify-end self-end justify-self-end sm:h-[620px] md:h-full"
             >
               <img
                 src={heroCharacter}
                 alt="Abubakar"
-                className="block h-full max-h-[720px] max-w-full select-none object-contain"
+                className="block h-full w-auto  select-none object-cover"
                 style={{ filter: "drop-shadow(0 40px 80px rgba(124,58,237,0.35))" }}
               />
             </motion.div>
@@ -328,15 +328,15 @@ function Index() {
             </p>
     <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-border/60">
               <div>
-                <div className="font-display text-4xl text-accent">60+</div>
+                <div className="font-display text-4xl text-accent">20+</div>
                 <div className="text-sm text-muted-foreground mt-1">Projects shipped</div>
               </div>
               <div>
-                <div className="font-display text-4xl text-accent">14</div>
+                <div className="font-display text-4xl text-accent">5</div>
                 <div className="text-sm text-muted-foreground mt-1">Awards & features</div>
               </div>
               <div>
-                <div className="font-display text-4xl text-accent">6yr</div>
+                <div className="font-display text-4xl text-accent">2yr</div>
                 <div className="text-sm text-muted-foreground mt-1">Design experience</div>
               </div>
             </div>
@@ -411,33 +411,19 @@ function Index() {
 
 function AnimatedGlobe() {
   return (
-    <div className="relative flex min-h-[320px] items-center justify-center sm:min-h-[420px] lg:min-h-[500px] lg:justify-center">
-      {/* Soft blue/purple glows */}
-      <motion.div
-        className="absolute h-[260px] w-[260px] rounded-full bg-primary/30 blur-3xl pointer-events-none sm:h-[420px] sm:w-[420px] lg:h-[520px] lg:w-[520px]"
-        animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0.85, 0.5] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute h-[220px] w-[220px] rounded-full bg-accent/25 blur-3xl pointer-events-none sm:h-[340px] sm:w-[340px] lg:h-[420px] lg:w-[420px]"
-        animate={{ scale: [1.1, 1, 1.1], opacity: [0.4, 0.7, 0.4] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-      />
-      <motion.div
-        className="relative"
-        animate={{ y: [0, -22, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        whileHover={{ scale: 1.05 }}
-      >
-        <motion.img
-          src={globe}
-          alt="Rotating globe"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
-          className="relative w-full max-w-[300px] object-contain drop-shadow-[0_30px_80px_rgba(124,58,237,0.55)] sm:max-w-[420px] lg:max-w-[560px]"
-        />
-      </motion.div>
-    </div>
+   <motion.div
+  className="relative w-full max-w-[560px] aspect-square rounded-full overflow-hidden border border-border/60 shadow-[0_30px_80px_rgba(124,58,237,0.45)]"
+  animate={{ y: [0, -22, 0] }}
+  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+>
+  <iframe
+  title="Low Poly Cartoon Planet Earth"
+  src="https://sketchfab.com/models/e60688cce55343339695b24296e1a527/embed?autostart=1&autospin=0&scrollwheel=0&ui_infos=0&ui_help=0"
+  className="absolute inset-0 h-full w-full"
+  allow="autoplay; fullscreen; xr-spatial-tracking"
+  allowFullScreen
+/>
+</motion.div>
   );
 }
 
