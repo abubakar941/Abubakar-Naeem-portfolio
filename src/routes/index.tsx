@@ -16,9 +16,9 @@ import watercolorAsset from "@/assets/watercolor.png.asset.json";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Studio Nova — Designer Portfolio" },
+      { title: "Abubakar-Naeem Designer Portfolio" },
       { name: "description", content: "A multidisciplinary designer crafting interfaces, brand systems and motion for ambitious teams." },
-      { property: "og:title", content: "Studio Nova — Designer Portfolio" },
+      { property: "og:title", content: "Abubakar-Naeem Designer Portfolio" },
       { property: "og:description", content: "A multidisciplinary designer crafting interfaces, brand systems and motion for ambitious teams." },
     ],
   }),
