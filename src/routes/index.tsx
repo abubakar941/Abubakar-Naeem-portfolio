@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import work1 from "@/assets/work-1.jpg";
 import work2 from "@/assets/work-2.jpg";
@@ -10,7 +10,6 @@ import work6 from "@/assets/work-6.jpg";
 import portrait from "@/assets/portrait.jpg";
 import heroCharacter from "@/assets/hero-character.png";
 import globe from "@/assets/globe.png";
-import heroSplash from "@/assets/hero-splash.png";
 import watercolorAsset from "@/assets/watercolor.png.asset.json";
 
 export const Route = createFileRoute("/")({
@@ -69,34 +68,84 @@ type Work = (typeof works)[number];
 
 function Index() {
   const [activeWork, setActiveWork] = useState<Work | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroImageY = useTransform(scrollYProgress, [0, 1], [0, 120]);
   const heroTextY = useTransform(scrollYProgress, [0, 1], [0, -60]);
-  const glowY = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
   return (
     <div className="noise-bg min-h-screen text-foreground scroll-smooth">
       {/* Nav */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/60 border-b border-border/50">
-        <nav className="mx-auto max-w-7xl px-6 py-5 grid grid-cols-[auto_1fr_auto] items-center gap-6">
-          <a href="#top" className="font-display font-bold tracking-[0.15em] text-xl md:text-2xl">
+      <header className="sticky top-0 z-50 border-b border-border/50 bg-background/75 backdrop-blur-xl">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-10">
+          <a href="#top" className="font-display text-lg font-bold tracking-[0.15em] sm:text-xl md:text-2xl">
             ABUBAKR
           </a>
-          <ul className="hidden md:flex items-center justify-center gap-10 text-sm text-muted-foreground">
-            <li><a href="#work" className="text-foreground hover:text-accent transition">Work</a></li>
-            <li><a href="#about" className="hover:text-foreground transition">About</a></li>
-            <li><a href="#services" className="hover:text-foreground transition">Services</a></li>
-            <li><a href="#contact" className="hover:text-foreground transition">Contacts</a></li>
+
+          <ul className="hidden items-center justify-center gap-8 text-sm text-muted-foreground md:flex lg:gap-10">
+            <li><a href="#work" className="text-foreground transition hover:text-accent">Work</a></li>
+            <li><a href="#about" className="transition hover:text-foreground">About</a></li>
+            <li><a href="#services" className="transition hover:text-foreground">Services</a></li>
+            <li><a href="#contact" className="transition hover:text-foreground">Contacts</a></li>
           </ul>
-          <a href="#contact" className="justify-self-end rounded-full bg-accent text-accent-foreground px-6 py-2.5 text-sm font-medium hover:opacity-90 transition">
-            Let's talk
-          </a>
+
+          <div className="flex items-center gap-2">
+            <a href="#contact" className="hidden rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition hover:opacity-90 sm:inline-flex">
+              Let's talk
+            </a>
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen((v) => !v)}
+              aria-label="Toggle navigation"
+              aria-expanded={isMenuOpen}
+              className="grid h-10 w-10 place-items-center rounded-full border border-border/60 bg-card/70 text-foreground md:hidden"
+            >
+              <span className="text-xl leading-none">{isMenuOpen ? "✕" : "☰"}</span>
+            </button>
+          </div>
         </nav>
+
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2 }}
+              className="border-t border-border/50 bg-background/95 px-4 py-4 md:hidden"
+            >
+              <div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-muted-foreground">
+                {[
+                  ["Work", "#work"],
+                  ["About", "#about"],
+                  ["Services", "#services"],
+                  ["Contacts", "#contact"],
+                ].map(([label, href]) => (
+                  <a
+                    key={label}
+                    href={href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="rounded-xl border border-border/50 bg-card/50 px-4 py-3 transition hover:text-foreground"
+                  >
+                    {label}
+                  </a>
+                ))}
+                <a
+                  href="#contact"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="rounded-xl bg-accent px-4 py-3 text-left font-medium text-accent-foreground transition hover:opacity-90"
+                >
+                  Let's talk
+                </a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Vertical social rail */}
-      <div className="hidden md:flex fixed right-4 top-1/2 -translate-y-1/2 z-40 flex-col gap-5 text-muted-foreground">
+     <div className="fixed bottom-4 left-4 z-40 flex flex-row gap-4 rounded-full border border-border/60 bg-background/85 px-4 py-3 text-muted-foreground shadow-lg backdrop-blur md:bottom-auto md:left-auto md:right-4 md:top-1/2 md:-translate-y-1/2 md:flex-col md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-0">
         <a
           href="https://www.instagram.com/design.by.bakar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
           target="_blank"
@@ -135,7 +184,7 @@ function Index() {
         ref={heroRef}
         id="top"
         className="relative w-full overflow-hidden"
-        style={{ backgroundColor: "#07071F", minHeight: "calc(100vh - 73px)" }}
+        style={{ backgroundColor: "#07071F", minHeight: "calc(100svh - 65px)" }}
       >
         {/* Watercolor texture overlay — center/left, soft */}
         <div
@@ -152,29 +201,29 @@ function Index() {
           }}
         />
 
-        <div className="relative mx-auto max-w-7xl px-6 md:px-10 h-full flex flex-col" style={{ minHeight: "calc(100vh - 73px)" }}>
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-[45%_55%] items-center gap-8 pt-16 md:pt-24">
+        <div className="relative mx-auto flex h-full max-w-7xl flex-col px-4 sm:px-6 lg:px-10" style={{ minHeight: "calc(100svh - 65px)" }}>
+          <div className="grid flex-1 grid-cols-1 items-center gap-8 pt-10 sm:pt-14 lg:grid-cols-[45%_55%] lg:pt-20">
             {/* Left */}
             <motion.div
               style={{ y: heroTextY }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="py-12 self-center"
+              className="self-center py-10 text-left sm:py-12"
             >
-              <p className="text-base md:text-lg text-muted-foreground mb-6">
+              <p className="mb-5 text-sm text-muted-foreground sm:text-base md:text-lg">
                 Hi, I'm Abubakar,
               </p>
-              <h1 className="font-display font-bold uppercase tracking-tight text-[64px] sm:text-[88px] md:text-[100px] lg:text-[118px]" style={{ lineHeight: 0.98 }}>
+              <h1 className="font-display text-[clamp(3rem,15vw,7.375rem)] font-bold uppercase tracking-tight" style={{ lineHeight: 0.98 }}>
                 <span className="block text-white">I'M A WEB</span>
                 <span className="block text-gradient">DESIGNER</span>
               </h1>
-              <p className="mt-8 text-base md:text-lg text-muted-foreground max-w-[520px] leading-relaxed">
+              <p className="mt-6 max-w-[520px] text-sm leading-relaxed text-muted-foreground sm:text-base md:text-lg">
                 I design and build modern clean and user friendly websites focused on simple design and smooth experiences that turn ideas into real products.
               </p>
               <a
                 href="#work"
-                className="group mt-10 inline-flex items-center gap-2 font-display font-semibold text-foreground pb-1 relative"
+                className="group relative mt-8 inline-flex items-center gap-2 pb-1 font-display font-semibold text-foreground sm:mt-10"
               >
                 <span>View My Projects →</span>
                 <span className="absolute left-0 bottom-0 h-[2px] w-full bg-accent origin-left scale-x-100 group-hover:scale-x-0 transition-transform duration-500" />
@@ -188,21 +237,20 @@ function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-              className="relative h-full self-end flex justify-end items-end"
+              className="relative flex h-[360px] items-end justify-end self-end sm:h-[520px] lg:h-full"
             >
               <img
                 src={heroCharacter}
                 alt="Abubakar"
-                className="block w-auto h-full
-                 object-cover select-none h-full"
+                className="block h-full max-h-[720px] max-w-full select-none object-contain"
                 style={{ filter: "drop-shadow(0 40px 80px rgba(124,58,237,0.35))" }}
               />
             </motion.div>
           </div>
 
           {/* Marquee at bottom of hero */}
-          <div className="relative border-y border-white/10 py-5 overflow-hidden">
-            <div className="flex gap-12 whitespace-nowrap animate-marquee font-display text-xl text-muted-foreground/70">
+          <div className="relative overflow-hidden border-y border-white/10 py-4 sm:py-5">
+            <div className="flex animate-marquee gap-8 whitespace-nowrap font-display text-base text-muted-foreground/70 sm:gap-12 sm:text-xl">
               {Array.from({ length: 2 }).map((_, i) => (
                 <div key={i} className="flex gap-12 shrink-0">
                   {["Figma", "Canva", "After Effects", "Rive", "Framer", "Lottie", "Webflow", "Spline"].map((s) => (
@@ -219,16 +267,16 @@ function Index() {
       </section>
 
       {/* Work — Masonry */}
-      <section id="work" className="mx-auto max-w-7xl px-6 py-32">
-        <div className="flex items-end justify-between mb-12">
+      <section id="work" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-32">
+        <div className="mb-10 flex flex-col gap-4 sm:mb-12 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">Selected work</p>
-            <h2 className="font-display text-4xl md:text-6xl tracking-tight">Recent projects.</h2>
+            <h2 className="font-display text-4xl tracking-tight md:text-6xl">Recent projects.</h2>
           </div>
           <a href="#contact" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground">View archive →</a>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[180px] md:auto-rows-[220px] gap-5">
+        <div className="grid grid-cols-1 gap-5 auto-rows-[260px] sm:auto-rows-[320px] md:grid-cols-3 md:auto-rows-[220px]">
           {works.map((w, i) => (
             <motion.button
               key={i}
@@ -239,8 +287,7 @@ function Index() {
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: i * 0.06 }}
               whileHover={{ y: -4 }}
-              className={`group relative overflow-hidden rounded-2xl border border-border/60 bg-card text-left cursor-pointer ${w.span}`}
-              style={{ gridRow: w.span ? "span 2 / span 2" : undefined }}
+              className={`group relative cursor-pointer overflow-hidden rounded-2xl border border-border/60 bg-card text-left ${w.span ? "md:row-span-2" : ""}`}
             >
               <img
                 src={w.src}
@@ -249,10 +296,10 @@ function Index() {
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent opacity-80 group-hover:opacity-95 transition" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
+              <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-4 p-4 sm:p-6">
                 <div>
                   <p className="text-xs uppercase tracking-[0.2em] text-accent mb-1">{w.tag}</p>
-                  <h3 className="font-display text-2xl">{w.title}</h3>
+                  <h3 className="font-display text-xl sm:text-2xl">{w.title}</h3>
                 </div>
                 <span className="h-10 w-10 rounded-full bg-background/80 backdrop-blur grid place-items-center text-lg transition group-hover:bg-accent group-hover:text-accent-foreground">↗</span>
               </div>
@@ -262,8 +309,8 @@ function Index() {
       </section>
 
       {/* About */}
-      <section id="about" className="mx-auto max-w-7xl px-6 py-32">
-        <div className="grid md:grid-cols-12 gap-12 items-center">
+      <section id="about" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-32">
+        <div className="grid gap-10 md:grid-cols-12 md:gap-12 md:items-center">
           <div className="md:col-span-5">
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border/60">
               <img src={portrait} alt="Portrait" className="h-full w-full object-cover" loading="lazy" />
@@ -272,24 +319,24 @@ function Index() {
           </div>
           <div className="md:col-span-7">
             <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">About</p>
-            <h2 className="font-display text-4xl md:text-6xl tracking-tight mb-8">
+            <h2 className="mb-6 font-display text-4xl tracking-tight md:mb-8 md:text-6xl">
               two years turning <span className="text-gradient italic">briefs</span> into beautiful, usable products.
             </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+            <p className="mb-6 text-base leading-relaxed text-muted-foreground md:text-lg">
               I’m a creative Web Designer who designs modern clean and user friendly websites. 
               I focus on creating layouts that look professional are easy to use and help brands build a strong online presence.
             </p>
-            <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-border/60">
+    <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-border/60">
               <div>
-                <div className="font-display text-4xl text-accent">20+</div>
+                <div className="font-display text-4xl text-accent">60+</div>
                 <div className="text-sm text-muted-foreground mt-1">Projects shipped</div>
               </div>
               <div>
-                <div className="font-display text-4xl text-accent">5</div>
+                <div className="font-display text-4xl text-accent">14</div>
                 <div className="text-sm text-muted-foreground mt-1">Awards & features</div>
               </div>
               <div>
-                <div className="font-display text-4xl text-accent">2yr</div>
+                <div className="font-display text-4xl text-accent">6yr</div>
                 <div className="text-sm text-muted-foreground mt-1">Design experience</div>
               </div>
             </div>
@@ -298,15 +345,15 @@ function Index() {
       </section>
 
       {/* Services */}
-      <section id="services" className="mx-auto max-w-7xl px-6 py-32">
+      <section id="services" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-32">
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">What I do</p>
-        <h2 className="font-display text-4xl md:text-6xl tracking-tight mb-16 max-w-3xl">
+        <h2 className="mb-10 max-w-3xl font-display text-4xl tracking-tight md:mb-16 md:text-6xl">
           One Designer Many Ways to Bring Ideas to Life.
         </h2>
-        <div className="grid md:grid-cols-2 gap-px bg-border/60 rounded-3xl overflow-hidden border border-border/60">
+        <div className="grid grid-cols-1 gap-px overflow-hidden rounded-3xl border border-border/60 bg-border/60 md:grid-cols-2">
           {services.map((s) => (
-            <div key={s.n} className="bg-card p-10 hover:bg-secondary/60 transition group">
-              <div className="flex items-start gap-6">
+            <div key={s.n} className="group bg-card p-6 transition hover:bg-secondary/60 sm:p-10">
+              <div className="flex items-start gap-4 sm:gap-6">
                 <span className="font-display text-xl text-accent">{s.n}</span>
                 <div>
                   <h3 className="font-display text-2xl mb-3 group-hover:text-accent transition">{s.t}</h3>
@@ -319,10 +366,10 @@ function Index() {
       </section>
 
       {/* Contact */}
-      <section id="contact" className="mx-auto max-w-7xl px-6 py-32">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="rounded-3xl border border-border/60 bg-card/60 backdrop-blur p-8 md:p-10">
-            <h2 className="font-display text-4xl md:text-5xl tracking-tight mb-8">Get in Touch</h2>
+      <section id="contact" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-32">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-12">
+          <div className="rounded-3xl border border-border/60 bg-card/60 p-5 backdrop-blur sm:p-8 md:p-10">
+            <h2 className="mb-6 font-display text-3xl tracking-tight sm:text-4xl md:mb-8 md:text-5xl">Get in Touch</h2>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -330,7 +377,7 @@ function Index() {
               }}
               className="space-y-4"
             >
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <input type="text" placeholder="First Name" className="w-full rounded-lg border border-border bg-background/50 px-4 py-3 text-sm focus:outline-none focus:border-accent transition" />
                 <input type="text" placeholder="Last Name" className="w-full rounded-lg border border-border bg-background/50 px-4 py-3 text-sm focus:outline-none focus:border-accent transition" />
               </div>
@@ -351,7 +398,7 @@ function Index() {
       </section>
 
       <footer className="border-t border-border/60 py-8">
-        <div className="mx-auto max-w-7xl px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 px-4 text-left text-sm text-muted-foreground sm:px-6 md:flex-row md:items-center">
           <p>© 2026 Abu Bakar Crafted with care designed with purpose.</p>
           <p>work.abubakarnaeem@gmail.com</p>
         </div>
@@ -364,15 +411,15 @@ function Index() {
 
 function AnimatedGlobe() {
   return (
-    <div className="relative flex justify-center items-center min-h-[500px]">
+    <div className="relative flex min-h-[320px] items-center justify-center sm:min-h-[420px] lg:min-h-[500px] lg:justify-center">
       {/* Soft blue/purple glows */}
       <motion.div
-        className="absolute h-[520px] w-[520px] rounded-full bg-primary/30 blur-3xl pointer-events-none"
+        className="absolute h-[260px] w-[260px] rounded-full bg-primary/30 blur-3xl pointer-events-none sm:h-[420px] sm:w-[420px] lg:h-[520px] lg:w-[520px]"
         animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0.85, 0.5] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute h-[420px] w-[420px] rounded-full bg-accent/25 blur-3xl pointer-events-none"
+        className="absolute h-[220px] w-[220px] rounded-full bg-accent/25 blur-3xl pointer-events-none sm:h-[340px] sm:w-[340px] lg:h-[420px] lg:w-[420px]"
         animate={{ scale: [1.1, 1, 1.1], opacity: [0.4, 0.7, 0.4] }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
       />
@@ -387,9 +434,23 @@ function AnimatedGlobe() {
           alt="Rotating globe"
           animate={{ rotate: 360 }}
           transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
-          className="relative w-full max-w-[560px] object-contain drop-shadow-[0_30px_80px_rgba(124,58,237,0.55)]"
+          className="relative w-full max-w-[300px] object-contain drop-shadow-[0_30px_80px_rgba(124,58,237,0.55)] sm:max-w-[420px] lg:max-w-[560px]"
         />
       </motion.div>
+    </div>
+  );
+}
+
+export function ResponsiveTable({ children }: { children: ReactNode }) {
+  return (
+    <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+      <div className="inline-block min-w-full align-middle">
+        <div className="overflow-hidden rounded-2xl border border-border/60">
+          <table className="min-w-[700px] w-full text-left text-sm">
+            {children}
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
@@ -399,7 +460,7 @@ function ProjectModal({ work, onClose }: { work: Work | null; onClose: () => voi
     <AnimatePresence>
       {work && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -420,7 +481,7 @@ function ProjectModal({ work, onClose }: { work: Work | null; onClose: () => voi
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 10 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl border border-border/60 bg-card/90 backdrop-blur-2xl shadow-[0_30px_80px_-20px_rgba(124,58,237,0.5)]"
+            className="relative max-h-[90svh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-border/60 bg-card/90 shadow-[0_30px_80px_-20px_rgba(124,58,237,0.5)] backdrop-blur-2xl sm:rounded-3xl"
           >
             <button
               onClick={onClose}
@@ -433,9 +494,9 @@ function ProjectModal({ work, onClose }: { work: Work | null; onClose: () => voi
               <img src={work.src} alt={work.title} className="h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent" />
             </div>
-            <div className="p-6 md:p-10">
+            <div className="p-5 sm:p-6 md:p-10">
               <p className="text-xs uppercase tracking-[0.2em] text-accent mb-2">{work.tag}</p>
-              <h3 className="font-display text-3xl md:text-4xl tracking-tight mb-4">{work.title}</h3>
+              <h3 className="mb-4 font-display text-2xl tracking-tight sm:text-3xl md:text-4xl">{work.title}</h3>
               <p className="text-muted-foreground leading-relaxed mb-6">{work.description}</p>
               <div className="flex flex-wrap gap-2 mb-8">
                 {work.tech?.map((t) => (
